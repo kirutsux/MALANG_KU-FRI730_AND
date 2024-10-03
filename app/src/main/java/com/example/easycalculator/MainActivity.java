@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private DecimalFormat decimalFormat;
     private MaterialButton button0, button1, button2, button3, button4, button5, button6, button7, button8, button9,
             buttonDot, buttonAdd, buttonSub, buttonMultiply, buttonDivide, buttonPercent, buttonClear, buttonOFF, buttonEqual;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,166 +48,146 @@ public class MainActivity extends AppCompatActivity {
         buttonOFF = findViewById(R.id.off);
         buttonEqual = findViewById(R.id.equal);
         buttonPercent = findViewById(R.id.percent);
-        button0.setOnClickListener(new View.OnClickListener() {
+
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "0");
+                MaterialButton button = (MaterialButton) view;
+                inputDisplay.setText(inputDisplay.getText() + button.getText().toString());
             }
-        });
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "1");
-            }
-        });
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "2");
-            }
-        });
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "3");
-            }
-        });
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "4");
-            }
-        });
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "5");
-            }
-        });
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "6");
-            }
-        });
-        button7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "7");
-            }
-        });
-        button8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "8");
-            }
-        });
-        button9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                inputDisplay.setText(inputDisplay.getText() + "9");
-            }
-        });
+        };
+
+        button0.setOnClickListener(listener);
+        button1.setOnClickListener(listener);
+        button2.setOnClickListener(listener);
+        button3.setOnClickListener(listener);
+        button4.setOnClickListener(listener);
+        button5.setOnClickListener(listener);
+        button6.setOnClickListener(listener);
+        button7.setOnClickListener(listener);
+        button8.setOnClickListener(listener);
+        button9.setOnClickListener(listener);
+
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allCalculations();
-                currentSymbol = ADDITION;
-                outputDisplay.setText(decimalFormat.format(firstValue) + "+");
-                inputDisplay.setText(null);
+                processOperator(ADDITION);
             }
         });
+
         buttonSub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allCalculations();
-                currentSymbol = SUBTRACTION;
-                outputDisplay.setText(decimalFormat.format(firstValue) + "-");
-                inputDisplay.setText(null);
+                processOperator(SUBTRACTION);
             }
         });
+
         buttonMultiply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allCalculations();
-                currentSymbol = MULTIPLICATION;
-                outputDisplay.setText(decimalFormat.format(firstValue) + "x");
-                inputDisplay.setText(null);
+                processOperator(MULTIPLICATION);
             }
         });
+
         buttonDivide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allCalculations();
-                currentSymbol = DIVISION;
-                outputDisplay.setText(decimalFormat.format(firstValue) + "/");
-                inputDisplay.setText(null);
+                processOperator(DIVISION);
             }
         });
+
         buttonPercent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allCalculations();
-                currentSymbol = PERCENT;
-                outputDisplay.setText(decimalFormat.format(firstValue) + "%");
-                inputDisplay.setText(null);
+                processOperator(PERCENT);
             }
         });
+
         buttonDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 inputDisplay.setText(inputDisplay.getText() + ".");
             }
         });
+
         buttonClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (inputDisplay.getText().length() > 0) {
-                    CharSequence currentText = inputDisplay.getText();
-                    inputDisplay.setText(currentText.subSequence(0, currentText.length() - 1));
-                } else {
-                    firstValue = Double.NaN;
-                    secondValue = Double.NaN;
-                    inputDisplay.setText("");
-                    outputDisplay.setText("");
-                }
+                clearInput();
             }
         });
+
         buttonOFF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+
         buttonEqual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allCalculations();
-                outputDisplay.setText(decimalFormat.format(firstValue));
-                firstValue = Double.NaN;
-                currentSymbol = '0';
+                calculateResult();
             }
         });
     }
-    private void allCalculations(){
+
+    private void processOperator(char operator) {
+        // Check if there's already a value in firstValue or a new number input
         if (!Double.isNaN(firstValue)) {
-            secondValue = Double.parseDouble(inputDisplay.getText().toString());
-            inputDisplay.setText(null);
-            if (currentSymbol == ADDITION)
-                firstValue = this.firstValue + secondValue;
-            else if (currentSymbol == SUBTRACTION)
-                firstValue = this.firstValue - secondValue;
-            else if (currentSymbol == MULTIPLICATION)
-                firstValue = this.firstValue * secondValue;
-            else if (currentSymbol == DIVISION)
-                firstValue = this.firstValue / secondValue;
-            else if (currentSymbol == PERCENT)
-                firstValue = this.firstValue % secondValue;
+            allCalculations(); // Continue with the result from the last calculation
+        } else if (inputDisplay.getText().length() > 0) {
+            // If the firstValue is NaN, try to parse the number input
+            firstValue = Double.parseDouble(inputDisplay.getText().toString());
+        }
+
+        currentSymbol = operator;
+        outputDisplay.setText(decimalFormat.format(firstValue) + String.valueOf(operator));
+        inputDisplay.setText(null); // Ready for the next number input
+    }
+
+
+    private void allCalculations() {
+        // Only parse the input if there is valid input
+        if (!Double.isNaN(firstValue)) {
+            if (inputDisplay.getText().length() > 0) {
+                secondValue = Double.parseDouble(inputDisplay.getText().toString());
+                if (currentSymbol == ADDITION)
+                    firstValue += secondValue;
+                else if (currentSymbol == SUBTRACTION)
+                    firstValue -= secondValue;
+                else if (currentSymbol == MULTIPLICATION)
+                    firstValue *= secondValue;
+                else if (currentSymbol == DIVISION)
+                    firstValue /= secondValue;
+                else if (currentSymbol == PERCENT)
+                    firstValue %= secondValue;
+            }
         } else {
             try {
                 firstValue = Double.parseDouble(inputDisplay.getText().toString());
             } catch (Exception e) {
+                // Handle the case where the input is not a valid number
             }
         }
+    }
+
+    private void calculateResult() {
+        if (inputDisplay.getText().length() > 0 || !Double.isNaN(firstValue)) {
+            allCalculations(); // Calculate based on the last operation
+            // Show the result
+            outputDisplay.setText(decimalFormat.format(firstValue));
+            inputDisplay.setText(null); // Clear the input display for the next number
+            // Do not reset firstValue so it can be used in the next operation
+            currentSymbol = '0'; // Reset the operator only
+        }
+    }
+
+
+    private void clearInput() {
+        inputDisplay.setText("");
+        outputDisplay.setText("");
+        firstValue = Double.NaN;
+        secondValue = Double.NaN;
     }
 }
